@@ -1,7 +1,7 @@
 ﻿<#
 Created:    2018-10-24
 Updated:    2018-10-24
-Version:    1.0
+Version:    1.1
 Author :    Marcus Wahlstam
 Company:    Advitum AB
 
@@ -25,6 +25,8 @@ is not supported by the author
 
 Updates
 1.0 - Initial release
+1.1 - Added support for named instance. You can now set a servername to "server1\instance", and the script will create a 
+separate logfile for that instance.
 
 License:
 The MIT License (MIT)
@@ -67,7 +69,17 @@ WHERE database_id NOT BETWEEN 0
 foreach ($server in $servers)
 {
     $DBArray = @()
-    $LogFile = "$PSScriptRoot\$server.csv"
+    
+    #Set logfile location and name
+    if ($server -match "\\")
+    {
+        $LogFile = "$PSScriptRoot" + "\" + "$($server.Replace('\','-'))" + ".csv"
+    }
+    else
+    {
+        $LogFile = "$PSScriptRoot\$server.csv"
+    }
+
 
     #Authenticate to specific server with specific username/password
     if ($server -eq "server2")
